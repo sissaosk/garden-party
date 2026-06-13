@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>July 4th Garden Party</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+      background: rgba(70, 109, 29, 0.5);
+      color: #1a1a1a;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      justify-content: center;
+    }
+
+    .toggle-btn {
+      padding: 10px 20px;
+      border: 0.5px solid #999;
+      background: #f5f0e8;
+      color: #1a1a1a;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .toggle-btn.active {
+      background: #d4e8c1;
+      border-color: #466d1d;
+      color: #3d5a1a;
+    }
+
+    .toggle-btn:hover {
+      background: #e8dccf;
+    }
+
+    .admin-link-btn {
+      padding: 8px 12px;
+      background: transparent;
+      color: #666;
+      border: 0.5px solid #ccc;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .admin-link-btn:hover {
+      background: rgba(70, 109, 29, 0.1);
+      color: #466d1d;
+      border-color: #466d1d;
+    }
+
+    .public-view {
+      display: none;
+    }
+
+    .public-view.active {
+      display: block;
+    }
+
+    .hero {
+      background: #f5f0e8;
+      border-radius: 12px;
+      border: 0.5px solid #d4c9b9;
+      padding: 40px 30px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .hero h1 {
+      font-size: 32px;
+      font-weight: 500;
+      margin-bottom: 12px;
+      color: #1a1a1a;
+    }
+
+    .hero p {
+      font-size: 16px;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .gallery {
+      margin-bottom: 30px;
+      background: #f5f0e8;
+      border-radius: 12px;
+      border: 0.5px solid #d4c9b9;
+      overflow: hidden;
+    }
+
+    .gallery-placeholder {
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #e8dccf, #d4c9b9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 14px;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .slideshow-container {
+      position: relative;
+      background: #1a1a1a;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slideshow-placeholder {
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #e8dccf, #d4c9b9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 14px;
+    }
+
+    .slideshow-controls {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 12px 16px;
+      border-radius: 8px;
+    }
+
+    .slide-btn {
+      padding: 8px 16px;
+      background: #466d1d;
+      color: #f5f0e8;
+      border: 0.5px solid #466d1d;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .slide-btn:hover {
+      background: #3d5a1a;
+    }
+
+    .upload-section {
+      padding: 20px;
+      text-align: center;
+      background: #f5f0e8;
+      border: 0.5px dashed #c4b9a9;
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+
+    .upload-section input[type="file"] {
+      display: none;
+    }
+
+    .upload-btn {
+      padding: 12px 20px;
+      background: #d4e8c1;
+      color: #3d5a1a;
+      border: 0.5px solid #466d1d;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .upload-btn:hover {
+      background: #466d1d;
+      color: #f5f0e8;
+    }
+
+.event-details {
+      background: #f5f0e8;
+      border: 0.5px solid #d4c9b9;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+
+    .detail-row {
+      display: flex;
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+
+    .detail-label {
+      color: #666;
+      min-width: 120px;
+      font-weight: 500;
+    }
+
+    .detail-value {
+      color: #1a1a1a;
+      flex: 1;
+    }
+
+    .signup-form {
+      background: #f5f0e8;
+      border: 0.5px solid #d4c9b9;
+      border-radius: 12px;
+      padding: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #1a1a1a;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 0.5px solid #c4b9a9;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fdfaf4;
+      color: #1a1a1a;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #466d1d;
+      box-shadow: 0 0 0 2px #d4e8c1;
+    }
+
+    .form-group select {
+      cursor: pointer;
+    }
+
+    .capacity-info {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .capacity-available {
+      color: #27500a;
+    }
+
+    .capacity-limited {
+      color: #854f0b;
+    }
+
+    .capacity-full {
+      color: #791f1f;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: #d4e8c1;
+      color: #3d5a1a;
+      border: 0.5px solid #466d1d;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+
+    .submit-btn:hover {
+      background: #466d1d;
+      color: #f5f0e8;
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .success-message {
+      background: #eaf3de;
+      color: #27500a;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      border: 0.5px solid #639922;
+    }
+
+    .admin-view {
+      display: none;
+    }
+
+    .admin-view.active {
+      display: block;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: #f5f0e8;
+      border: 0.5px solid #d4c9b9;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+
+    .capacity-table {
+      background: #f5f0e8;
+      border: 0.5px solid #d4c9b9;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+
+    .capacity-table-header {
+      background: #e8dccf;
+      padding: 16px;
+      font-weight: 500;
+      border-bottom: 0.5px solid #d4c9b9;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 12px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .capacity-row {
+      padding: 16px;
+      border-bottom: 0.5px solid #d4c9b9;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 12px;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .capacity-row:last-child {
+      border-bottom: none;
+    }
+
+    .accommodation-name {
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+
+    .capacity-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .capacity-bar {
+      width: 100px;
+      height: 6px;
+      background: #ddd;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .capacity-fill {
+      height: 100%;
+      background: #466d1d;
+      transition: width 0.3s;
+    }
+
+    .guest-list {
+      background: #f5f0e8;
+      border: 0.5px solid #d4c9b9;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .guest-list-header {
+      background: #e8dccf;
+      padding: 16px;
+      font-weight: 500;
+      border-bottom: 0.5px solid #d4c9b9;
+      display: grid;
+      grid-template-columns: 1fr 1.5fr 2fr;
+      gap: 12px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .guest-row {
+      padding: 16px;
+      border-bottom: 0.5px solid #d4c9b9;
+      display: grid;
+      grid-template-columns: 1fr 1.5fr 2fr;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 14px;
+    }
+
+    .guest-row:last-child {
+      border-bottom: none;
+    }
+
+    .guest-name {
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+
+    .guest-accommodation {
+      color: #666;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+      font-size: 14px;
+    }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 500;
+      margin: 30px 0 16px;
+      color: #1a1a1a;
+    }
+
+    @media (max-width: 768px) {
+      .gallery-images {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .capacity-table-header,
+      .capacity-row {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .guest-list-header,
+      .guest-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- PUBLIC VIEW -->
+  <div id="public-view" class="public-view active">
+    
+    <div class="hero">
+      <h1>Garden Party</h1>
+      <p>It's summer. The garden awaits. Bring your awesome selves, your spirit of adventure and leave your worries in the past! Time to release the stress, embrace peace, and let the smell of nature and good vibes carry us away. Let's celebrate life and our collected wins with garden games, music, and friends in a secluded little chaos garden</p>
+    </div>
+
+    <!-- Gallery -->
+    <div class="gallery">
+      <div id="slideshow-container" class="slideshow-container">
+        <div id="slideshow-placeholder" class="slideshow-placeholder">
+          <span>Photos will appear here once uploaded</span>
+        </div>
+        <div id="slideshow-slides" style="display: none;">
+          <img id="slideshow-image" src="" alt="Party photo" style="width: 100%; height: auto; display: block;">
+          <div class="slideshow-controls">
+            <button onclick="previousSlide()" class="slide-btn">Previous</button>
+            <span id="slide-counter" style="margin: 0 12px; font-size: 14px;"></span>
+            <button onclick="nextSlide()" class="slide-btn">Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Event Details -->
+    <div class="event-details">
+      <h2>Event Details</h2>
+      
+      <div class="detail-row">
+        <div class="detail-label">Date & Time</div>
+        <div class="detail-value">4th July, 16:00</div>
+      </div>
+      
+      <div class="detail-row">
+        <div class="detail-label">Location</div>
+        <div class="detail-value">Sørbyveien 965, 3178 Våle</div>
+      </div>
+      
+      <div class="detail-row">
+        <div class="detail-label">Dress Code</div>
+        <div class="detail-value">Outdoor attire</div>
+      </div>
+      
+      <div class="detail-row">
+        <div class="detail-label">Please Bring</div>
+        <div class="detail-value">Your own drinks and something to BBQ. We will provide welcome drinks, snacks, and side dishes.</div>
+      </div>
+    </div>
+
+    <!-- Signup Form -->
+    <div class="signup-form">
+      <h2>Sign me up!</h2>
+      
+      <div id="success-message" class="success-message" style="display: none;">
+        Thank you for signing up! We are looking forward to seeing you!
+      </div>
+      
+      <form id="signup-form" onsubmit="handleSignup(event)">
+        <div class="form-group">
+          <label for="name">Your Name *</label>
+          <input type="text" id="name" name="name" required placeholder="Enter your name">
+        </div>
+        
+        <div class="form-group">
+          <label for="accommodation">Sleeping Arrangement *</label>
+          <select id="accommodation" name="accommodation" required onchange="updateCapacityInfo()">
+            <option value="">Select an option...</option>
+            <option value="shared-bedroom">Shared bedroom (8 spots)</option>
+            <option value="studio-bed">Studio bed (1 spot)</option>
+            <option value="couch">Couch (3 spots)</option>
+            <option value="hammock">Hammock (3 spots)</option>
+            <option value="yellow-camper">Yellow camper (1 spot)</option>
+            <option value="tent">Tent (6 spots)</option>
+            <option value="bring-own-tent">Bring your own tent (unlimited)</option>
+            <option value="no-overnight">No overnight stay</option>
+          </select>
+          <div id="capacity-info" class="capacity-info"></div>
+        </div>
+        
+        <div class="form-group">
+          <label for="comments">Comments or Questions</label>
+          <textarea id="comments" name="comments" placeholder="Any dietary restrictions, questions, or fun facts about yourself?" style="width: 100%; padding: 12px; border: 0.5px solid #c4b9a9; border-radius: 8px; font-size: 14px; font-family: inherit; background: #fdfaf4; color: #1a1a1a; min-height: 100px; resize: vertical;"></textarea>
+        </div>
+        
+        <button type="submit" class="submit-btn">LetsGoooooo!</button>
+      </form>
+      
+      <div style="text-align: center; margin-top: 24px; padding-top: 20px; border-top: 0.5px solid #d4c9b9;">
+        <button class="admin-link-btn" onclick="promptAdminPassword()" style="display: inline-block;">Admin</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN VIEW -->
+  <div id="admin-view" class="admin-view">
+    
+    <h1 style="font-size: 24px; font-weight: 500; margin-bottom: 24px;">Admin Dashboard</h1>
+    
+    <!-- Image Upload Section -->
+    <div class="upload-section">
+      <p style="font-size: 14px; color: #666; margin-bottom: 12px;">Upload party photos</p>
+      <label for="admin-image-input" class="upload-btn">Upload Photos</label>
+      <input type="file" id="admin-image-input" multiple accept="image/*" onchange="handleImageUpload(event)">
+      <div id="admin-image-count" style="font-size: 12px; color: #666; margin-top: 8px;"></div>
+    </div>
+    
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Guests</div>
+        <div class="stat-value" id="total-guests">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Overnight Stays</div>
+        <div class="stat-value" id="overnight-guests">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Day Visit Only</div>
+        <div class="stat-value" id="day-only-guests">0</div>
+      </div>
+    </div>
+
+    <!-- Capacity Overview -->
+    <h2>Sleeping Arrangement Availability</h2>
+    <div class="capacity-table">
+      <div class="capacity-table-header">
+        <div>Accommodation</div>
+        <div>Booked</div>
+        <div>Capacity</div>
+        <div>Status</div>
+      </div>
+      <div id="capacity-rows"></div>
+    </div>
+
+    <!-- Guest List -->
+    <h2>Guest List</h2>
+    <div class="guest-list">
+      <div class="guest-list-header">
+        <div>Name</div>
+        <div>Sleeping Arrangement</div>
+        <div>Comments</div>
+      </div>
+      <div id="guest-rows"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  const ADMIN_PASSWORD = 'RandomGrace42';
+  const ACCOMMODATIONS = {
+    'shared-bedroom': { name: 'Shared bedroom', capacity: 8 },
+    'studio-bed': { name: 'Studio bed', capacity: 1 },
+    'couch': { name: 'Couch', capacity: 3 },
+    'hammock': { name: 'Hammock', capacity: 3 },
+    'yellow-camper': { name: 'Yellow camper', capacity: 1 },
+    'tent': { name: 'Tent', capacity: 6 },
+    'bring-own-tent': { name: 'Bring your own tent', capacity: null },
+    'no-overnight': { name: 'No overnight stay', capacity: null }
+  };
+
+  let currentSlide = 0;
+  let slideImages = [];
+
+  function initializeApp() {
+    loadImages();
+    loadGuests();
+    updateCapacityInfo();
+    renderAdminView();
+  }
+
+  function promptAdminPassword() {
+    const password = prompt('Enter admin password:');
+    if (password === ADMIN_PASSWORD) {
+      switchView('admin');
+    } else if (password !== null) {
+      alert('Incorrect password');
+    }
+  }
+
+  function switchView(view) {
+    document.getElementById('public-view').classList.remove('active');
+    document.getElementById('admin-view').classList.remove('active');
+    
+    if (view === 'public') {
+      document.getElementById('public-view').classList.add('active');
+    } else {
+      document.getElementById('admin-view').classList.add('active');
+      renderAdminView();
+    }
+  }
+
+  function handleImageUpload(event) {
+    const files = Array.from(event.target.files);
+    let images = JSON.parse(localStorage.getItem('partyImages') || '[]');
+    
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        images.push(e.target.result);
+        localStorage.setItem('partyImages', JSON.stringify(images));
+        loadImages();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function loadImages() {
+    slideImages = JSON.parse(localStorage.getItem('partyImages') || '[]');
+    const placeholder = document.getElementById('slideshow-placeholder');
+    const slidesContainer = document.getElementById('slideshow-slides');
+    const adminCount = document.getElementById('admin-image-count');
+    
+    if (slideImages.length > 0) {
+      placeholder.style.display = 'none';
+      slidesContainer.style.display = 'block';
+      currentSlide = 0;
+      displaySlide();
+      adminCount.textContent = `${slideImages.length} photo${slideImages.length !== 1 ? 's' : ''} uploaded`;
+    } else {
+      placeholder.style.display = 'flex';
+      slidesContainer.style.display = 'none';
+      adminCount.textContent = '';
+    }
+  }
+
+  function displaySlide() {
+    if (slideImages.length === 0) return;
+    
+    const img = document.getElementById('slideshow-image');
+    const counter = document.getElementById('slide-counter');
+    img.src = slideImages[currentSlide];
+    counter.textContent = `${currentSlide + 1} / ${slideImages.length}`;
+  }
+
+  function nextSlide() {
+    currentSlide = (currentSlide + 1) % slideImages.length;
+    displaySlide();
+  }
+
+  function previousSlide() {
+    currentSlide = (currentSlide - 1 + slideImages.length) % slideImages.length;
+    displaySlide();
+  }
+
+  function updateCapacityInfo() {
+    const select = document.getElementById('accommodation');
+    const info = document.getElementById('capacity-info');
+    const selectedValue = select.value;
+    
+    if (!selectedValue) {
+      info.textContent = '';
+      return;
+    }
+
+    const guests = JSON.parse(localStorage.getItem('partyGuests') || '[]');
+    const booked = guests.filter(g => g.accommodation === selectedValue).length;
+    const accommodation = ACCOMMODATIONS[selectedValue];
+    
+    if (accommodation.capacity === null) {
+      info.textContent = 'Unlimited spots available';
+      info.className = 'capacity-info capacity-available';
+    } else {
+      const remaining = accommodation.capacity - booked;
+      if (remaining <= 0) {
+        info.textContent = 'This option is fully booked';
+        info.className = 'capacity-info capacity-full';
+      } else if (remaining <= 2) {
+        info.textContent = `Only ${remaining} spot${remaining !== 1 ? 's' : ''} left!`;
+        info.className = 'capacity-info capacity-limited';
+      } else {
+        info.textContent = `${remaining} spots available`;
+        info.className = 'capacity-info capacity-available';
+      }
+    }
+  }
+
+  function handleSignup(event) {
+    event.preventDefault();
+    
+    const name = document.getElementById('name').value.trim();
+    const accommodation = document.getElementById('accommodation').value;
+    const comments = document.getElementById('comments').value.trim();
+    
+    if (!name || !accommodation) {
+      alert('Please fill in all required fields (marked with *)');
+      return;
+    }
+
+    const guests = JSON.parse(localStorage.getItem('partyGuests') || '[]');
+    
+    if (guests.some(g => g.name.toLowerCase() === name.toLowerCase())) {
+      alert('You have already signed up! Thank you for your interest.');
+      return;
+    }
+
+    const accommodation_obj = ACCOMMODATIONS[accommodation];
+    if (accommodation_obj.capacity !== null) {
+      const booked = guests.filter(g => g.accommodation === accommodation).length;
+      if (booked >= accommodation_obj.capacity) {
+        alert('This accommodation is fully booked. Please choose another option.');
+        return;
+      }
+    }
+
+    guests.push({ name, accommodation, comments, date: new Date().toISOString() });
+    localStorage.setItem('partyGuests', JSON.stringify(guests));
+    
+    document.getElementById('signup-form').reset();
+    document.getElementById('success-message').style.display = 'block';
+    setTimeout(() => {
+      document.getElementById('success-message').style.display = 'none';
+    }, 4000);
+    
+    updateCapacityInfo();
+  }
+
+  function loadGuests() {
+    return JSON.parse(localStorage.getItem('partyGuests') || '[]');
+  }
+
+  function editAccommodation(key) {
+    const acc = ACCOMMODATIONS[key];
+    const newName = prompt(`Edit "${acc.name}"`, acc.name);
+    if (newName && newName.trim()) {
+      acc.name = newName.trim();
+      renderAdminView();
+    }
+  }
+
+  function editCapacity(key) {
+    const acc = ACCOMMODATIONS[key];
+    if (acc.capacity === null) {
+      alert('This accommodation has unlimited capacity');
+      return;
+    }
+    const newCapacity = prompt(`Edit capacity for "${acc.name}"`, acc.capacity);
+    if (newCapacity !== null) {
+      const capacity = parseInt(newCapacity);
+      if (!isNaN(capacity) && capacity > 0) {
+        acc.capacity = capacity;
+        renderAdminView();
+      } else {
+        alert('Please enter a valid number');
+      }
+    }
+  }
+
+  function addAccommodation() {
+    const name = prompt('Enter new accommodation name:');
+    if (!name || !name.trim()) return;
+    
+    const capacity = prompt('Enter capacity (or leave blank for unlimited):');
+    if (capacity === null) return;
+    
+    const key = name.trim().toLowerCase().replace(/\s+/g, '-');
+    const capacityNum = capacity.trim() === '' ? null : parseInt(capacity);
+    
+    if (capacity.trim() !== '' && (isNaN(capacityNum) || capacityNum <= 0)) {
+      alert('Please enter a valid number for capacity');
+      return;
+    }
+    
+    ACCOMMODATIONS[key] = { name: name.trim(), capacity: capacityNum };
+    renderAdminView();
+  }
+
+  function renderAdminView() {
+    const guests = loadGuests();
+    
+    document.getElementById('total-guests').textContent = guests.length;
+    document.getElementById('overnight-guests').textContent = guests.filter(g => g.accommodation !== 'no-overnight').length;
+    document.getElementById('day-only-guests').textContent = guests.filter(g => g.accommodation === 'no-overnight').length;
+    
+    const capacityContainer = document.getElementById('capacity-rows');
+    capacityContainer.innerHTML = Object.entries(ACCOMMODATIONS).map(([key, acc]) => {
+      const booked = guests.filter(g => g.accommodation === key).length;
+      const percentage = acc.capacity ? Math.min((booked / acc.capacity) * 100, 100) : 0;
+      const capacityText = acc.capacity ? `${booked} / ${acc.capacity}` : `${booked} / ∞`;
+      
+      let statusClass = 'capacity-available';
+      let statusText = 'Available';
+      
+      if (acc.capacity) {
+        if (booked >= acc.capacity) {
+          statusClass = 'capacity-full';
+          statusText = 'Full';
+        } else if (booked >= acc.capacity * 0.8) {
+          statusClass = 'capacity-limited';
+          statusText = 'Limited';
+        }
+      }
+      
+      return `
+        <div class="capacity-row">
+          <div class="accommodation-name" style="display: flex; justify-content: space-between; align-items: center;">
+            <span>${acc.name}</span>
+            <div style="display: flex; gap: 6px;">
+              <button onclick="editAccommodation('${key}')" style="padding: 4px 8px; font-size: 12px; background: #d4e8c1; border: 0.5px solid #466d1d; border-radius: 4px; cursor: pointer;">Edit name</button>
+              ${acc.capacity !== null ? `<button onclick="editCapacity('${key}')" style="padding: 4px 8px; font-size: 12px; background: #d4e8c1; border: 0.5px solid #466d1d; border-radius: 4px; cursor: pointer;">Edit capacity</button>` : ''}
+            </div>
+          </div>
+          <div>${capacityText}</div>
+          <div class="capacity-status">
+            <div class="capacity-bar"><div class="capacity-fill" style="width: ${percentage}%"></div></div>
+          </div>
+          <div class="${statusClass}">${statusText}</div>
+        </div>
+      `;
+    }).join('') + `
+      <div style="padding: 16px; border-top: 0.5px solid #d4c9b9; text-align: center;">
+        <button onclick="addAccommodation()" style="padding: 10px 16px; background: #d4e8c1; color: #3d5a1a; border: 0.5px solid #466d1d; border-radius: 8px; cursor: pointer; font-weight: 500;">Add New Accommodation</button>
+      </div>
+    `;
+    
+    const guestContainer = document.getElementById('guest-rows');
+    if (guests.length === 0) {
+      guestContainer.innerHTML = '<div class="empty-state">No guests have signed up yet</div>';
+    } else {
+      guestContainer.innerHTML = guests.sort((a, b) => a.name.localeCompare(b.name)).map(guest => `
+        <div class="guest-row">
+          <div class="guest-name">${guest.name}</div>
+          <div class="guest-accommodation">${ACCOMMODATIONS[guest.accommodation].name}</div>
+          <div style="color: #666; font-size: 13px; word-break: break-word;">${guest.comments ? guest.comments : '-'}</div>
+        </div>
+      `).join('');
+    }
+  }
+
+  initializeApp();
+</script>
+
+</body>
+</html>
